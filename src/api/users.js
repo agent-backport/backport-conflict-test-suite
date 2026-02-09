@@ -92,6 +92,16 @@ function listUsers(filters = {}) {
     );
   }
 
+  // v2.0: Add preferences to user listing if requested
+  if (filters.includePreferences) {
+    const { getPreferences } = require('./preferences');
+    userList = userList.map(u => ({
+      ...formatUserResponse(u),
+      preferences: getPreferences(u.id)
+    }));
+    return userList;
+  }
+
   return userList.map(formatUserResponse);
 }
 

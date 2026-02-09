@@ -56,10 +56,36 @@ function validatePhoneNumber(phone) {
   return phoneRegex.test(phone);
 }
 
+/**
+ * Validate preference value (v2.0)
+ * @param {string} key - Preference key
+ * @param {any} value - Preference value
+ * @returns {boolean} True if valid preference value
+ */
+function validatePreferenceValue(key, value) {
+  const validThemes = ['light', 'dark', 'auto'];
+  const validLanguages = ['en', 'es', 'fr', 'de', 'ja'];
+
+  if (key === 'theme') {
+    return validThemes.includes(value);
+  }
+
+  if (key === 'language') {
+    return validLanguages.includes(value);
+  }
+
+  if (key === 'notifications' || key === 'privacy') {
+    return typeof value === 'object' && value !== null;
+  }
+
+  return true;
+}
+
 module.exports = {
   validateEmail,
   validatePassword,
   sanitizeInput,
   validateId,
-  validatePhoneNumber
+  validatePhoneNumber,
+  validatePreferenceValue
 };

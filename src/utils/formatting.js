@@ -62,10 +62,24 @@ function formatPhoneNumber(phone) {
   return phone;
 }
 
+/**
+ * Format preferences object (v2.0)
+ * @param {Object} preferences - User preferences
+ * @returns {Object} Formatted preferences with metadata
+ */
+function formatPreferences(preferences) {
+  return {
+    ...preferences,
+    lastUpdated: new Date().toISOString(),
+    version: '2.0'
+  };
+}
+
 module.exports = {
   formatUserResponse,
   formatDate,
   formatError,
   truncateText,
-  formatPhoneNumber
+  formatPhoneNumber,
+  formatPreferences
 };
