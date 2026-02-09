@@ -13,13 +13,17 @@ function validateEmail(email) {
 }
 
 /**
- * Validate password strength (v1.0 requirements)
+ * Validate password strength (v2.0 requirements)
  * @param {string} password - Password to validate
  * @returns {boolean} True if password meets requirements
  */
 function validatePassword(password) {
-  // v1.0: Minimum 8 characters
-  return password.length >= 8;
+  // v2.0: Minimum 12 characters, must contain uppercase, lowercase, and number
+  if (password.length < 12) return false;
+  if (!/[A-Z]/.test(password)) return false;
+  if (!/[a-z]/.test(password)) return false;
+  if (!/[0-9]/.test(password)) return false;
+  return true;
 }
 
 /**
@@ -28,8 +32,8 @@ function validatePassword(password) {
  * @returns {string} Sanitized input
  */
 function sanitizeInput(input) {
-  if (typeof input !== 'string') return '';
-  return input
+  return String(input)
+    .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
@@ -38,28 +42,17 @@ function sanitizeInput(input) {
 }
 
 /**
- * Validate numeric ID
- * @param {any} id - ID to validate
- * @returns {boolean} True if valid numeric ID
+ * Validate ID format (numeric string)
+ * @param {string} id - ID to validate
+ * @returns {boolean} True if valid ID format
  */
 function validateId(id) {
-  return Number.isInteger(id) && id > 0;
-}
-
-/**
- * Validate phone number format (v1.0)
- * @param {string} phone - Phone number
- * @returns {boolean} True if valid format
- */
-function validatePhoneNumber(phone) {
-  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-  return phoneRegex.test(phone);
+  return /^\d+$/.test(id);
 }
 
 module.exports = {
   validateEmail,
   validatePassword,
   sanitizeInput,
-  validateId,
-  validatePhoneNumber
+  validateId
 };
