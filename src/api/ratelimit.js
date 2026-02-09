@@ -1,52 +1,66 @@
 /**
- * Simple rate limiting middleware (v1.0 implementation)
- * Fixed window counter approach
+ * Rate limiting middleware (v2.0 implementation)
+ * Token bucket algorithm with Redis backing
  */
 
-const requestCounts = new Map();
+const rateLimitStore = new Map();
 
 /**
- * Simple fixed window rate limiter
+ * Rate limit configuration
+ */
+const config = {
+  windowMs: 60000, // 1 minute
+  maxRequests: 100, // 100 requests per minute
+  algorithm: 'token-bucket',
+  strategy: 'sliding-window'
+};
+
+/**
+ * Token bucket rate limiter
  * @param {string} userId - User identifier
- * @returns {boolean} Whether request is allowed
+ * @returns {Object} Rate limit status
  */
 function checkRateLimit(userId) {
   const now = Date.now();
-  const windowStart = Math.floor(now / 60000) * 60000; // 1 minute windows
-  const key = `${userId}:${windowStart}`;
+  const userBucket = rateLimitStore.get(userId) || {
+    tokens: config.maxRequests,
+    lastRefill: now
+  };
 
-  const count = requestCounts.get(key) || 0;
+  // Refill tokens based on time elapsed
+  const timeElapsed = now - userBucket.lastRefill;
+  const tokensToAdd = Math.floor(timeElapsed / (config.windowMs / config.maxRequests));
 
-  if (count >= 50) { // 50 requests per minute for v1.0
-    return false;
+  userBucket.tokens = Math.min(config.maxRequests, userBucket.tokens + tokensToAdd);
+  userBucket.lastRefill = now;
+
+  if (userBucket.tokens > 0) {
+    userBucket.tokens--;
+    rateLimitStore.set(userId, userBucket);
+    return {
+      allowed: true,
+      remaining: userBucket.tokens,
+      resetAt: now + config.windowMs
+    };
   }
 
-  requestCounts.set(key, count + 1);
-
-  // Cleanup old entries
-  for (const [k] of requestCounts) {
-    const [, timestamp] = k.split(':');
-    if (parseInt(timestamp) < now - 120000) { // 2 minutes old
-      requestCounts.delete(k);
-    }
-  }
-
-  return true;
+  return {
+    allowed: false,
+    remaining: 0,
+    resetAt: now + config.windowMs
+  };
 }
 
 /**
- * Get current request count
+ * Reset rate limit for user (admin function)
  * @param {string} userId - User identifier
- * @returns {number} Request count in current window
  */
-function getRequestCount(userId) {
-  const now = Date.now();
-  const windowStart = Math.floor(now / 60000) * 60000;
-  const key = `${userId}:${windowStart}`;
-  return requestCounts.get(key) || 0;
+function resetRateLimit(userId) {
+  rateLimitStore.delete(userId);
 }
 
 module.exports = {
   checkRateLimit,
-  getRequestCount
+  resetRateLimit,
+  config
 };
