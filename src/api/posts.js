@@ -43,26 +43,32 @@ function getPostById(id) {
 }
 
 /**
- * Publish a post
+ * Publish a post (v2.0 - with validation)
  * @param {number} id - Post ID
  * @returns {Object|null} Updated post or null if not found
+ * @throws {Error} If post content is too short
  */
 function publishPost(id) {
   const post = posts.get(id);
   if (!post) return null;
 
+  // v2.0: Validate content before publishing
+  if (!post.content || post.content.length < 100) {
+    throw new Error('Cannot publish: content must be at least 100 characters');
+  }
+
   post.published = true;
   post.publishedAt = new Date().toISOString();
+  post.reviewedBy = 'automated-system-v2';
   return post;
 }
 
 /**
- * List posts with optional filtering and sorting
+ * List posts with optional filtering
  * @param {Object} filters - Filter criteria
- * @param {Object} options - Sorting and pagination options
  * @returns {Array} Array of post objects
  */
-function listPosts(filters = {}, options = {}) {
+function listPosts(filters = {}) {
   let postList = Array.from(posts.values());
 
   if (filters.authorId) {
@@ -71,18 +77,6 @@ function listPosts(filters = {}, options = {}) {
 
   if (filters.published !== undefined) {
     postList = postList.filter(p => p.published === filters.published);
-  }
-
-  // v1.0: Added sorting support
-  if (options.sortBy === 'date') {
-    postList.sort((a, b) =>
-      new Date(b.createdAt) - new Date(a.createdAt)
-    );
-  }
-
-  // v1.0: Added pagination support
-  if (options.limit) {
-    postList = postList.slice(0, options.limit);
   }
 
   return postList;
