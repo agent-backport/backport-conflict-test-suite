@@ -1,5 +1,6 @@
 /**
- * General helper utilities
+ * String helper utilities
+ * Renamed from helpers.js to be more specific
  */
 
 /**
