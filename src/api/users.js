@@ -72,7 +72,7 @@ function deleteUser(id) {
 }
 
 /**
- * List all users with optional filtering
+ * List all users with optional filtering and search
  * @param {Object} filters - Filter criteria
  * @returns {Array} Array of user objects
  */
@@ -81,6 +81,15 @@ function listUsers(filters = {}) {
 
   if (filters.status) {
     userList = userList.filter(u => u.status === filters.status);
+  }
+
+  // v1.0: Add search functionality
+  if (filters.search) {
+    const searchLower = filters.search.toLowerCase();
+    userList = userList.filter(u =>
+      u.email.toLowerCase().includes(searchLower) ||
+      (u.name && u.name.toLowerCase().includes(searchLower))
+    );
   }
 
   return userList.map(formatUserResponse);

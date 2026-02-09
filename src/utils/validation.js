@@ -46,9 +46,20 @@ function validateId(id) {
   return Number.isInteger(id) && id > 0;
 }
 
+/**
+ * Validate phone number format (v1.0)
+ * @param {string} phone - Phone number
+ * @returns {boolean} True if valid format
+ */
+function validatePhoneNumber(phone) {
+  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+  return phoneRegex.test(phone);
+}
+
 module.exports = {
   validateEmail,
   validatePassword,
   sanitizeInput,
-  validateId
+  validateId,
+  validatePhoneNumber
 };

@@ -49,9 +49,23 @@ function truncateText(text, maxLength = 100) {
   return text.substring(0, maxLength - 3) + '...';
 }
 
+/**
+ * Format phone number for display (v1.0)
+ * @param {string} phone - Phone number
+ * @returns {string} Formatted phone number
+ */
+function formatPhoneNumber(phone) {
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.length === 10) {
+    return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+  }
+  return phone;
+}
+
 module.exports = {
   formatUserResponse,
   formatDate,
   formatError,
-  truncateText
+  truncateText,
+  formatPhoneNumber
 };
