@@ -57,11 +57,12 @@ function publishPost(id) {
 }
 
 /**
- * List posts with optional filtering
+ * List posts with optional filtering and sorting
  * @param {Object} filters - Filter criteria
+ * @param {Object} options - Sorting and pagination options
  * @returns {Array} Array of post objects
  */
-function listPosts(filters = {}) {
+function listPosts(filters = {}, options = {}) {
   let postList = Array.from(posts.values());
 
   if (filters.authorId) {
@@ -70,6 +71,18 @@ function listPosts(filters = {}) {
 
   if (filters.published !== undefined) {
     postList = postList.filter(p => p.published === filters.published);
+  }
+
+  // v1.0: Added sorting support
+  if (options.sortBy === 'date') {
+    postList.sort((a, b) =>
+      new Date(b.createdAt) - new Date(a.createdAt)
+    );
+  }
+
+  // v1.0: Added pagination support
+  if (options.limit) {
+    postList = postList.slice(0, options.limit);
   }
 
   return postList;
