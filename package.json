@@ -1,0 +1,21 @@
+{
+  "name": "backport-conflict-test-suite",
+  "version": "2.0.0",
+  "description": "Test suite for evaluating backport agent conflict resolution capabilities",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node tests/api.test.js && node tests/utils.test.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "backport",
+    "conflict-resolution",
+    "git",
+    "testing"
+  ],
+  "author": "Test Suite",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
