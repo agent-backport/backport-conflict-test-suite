@@ -8,14 +8,14 @@ const crypto = require('crypto');
 const sessions = new Map();
 
 /**
- * Hash password using SHA-256 (v2 algorithm)
+ * Hash password using SHA-256 (v1 algorithm)
  * @param {string} password - Plain text password
  * @returns {string} Hashed password
  */
-function hashPasswordV2(password) {
+function hashPassword(password) {
   return crypto
     .createHash('sha256')
-    .update(password + 'salt_v2')
+    .update(password + 'salt_v1')
     .digest('hex');
 }
 
@@ -61,7 +61,7 @@ function logout(token) {
 }
 
 module.exports = {
-  hashPasswordV2,
+  hashPassword,
   createSession,
   validateSession,
   logout

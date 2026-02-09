@@ -13,17 +13,13 @@ function validateEmail(email) {
 }
 
 /**
- * Validate password strength (v2.0 requirements)
+ * Validate password strength (v1.0 requirements)
  * @param {string} password - Password to validate
  * @returns {boolean} True if password meets requirements
  */
 function validatePassword(password) {
-  // v2.0: Minimum 12 characters, must contain uppercase, lowercase, and number
-  if (password.length < 12) return false;
-  if (!/[A-Z]/.test(password)) return false;
-  if (!/[a-z]/.test(password)) return false;
-  if (!/[0-9]/.test(password)) return false;
-  return true;
+  // v1.0: Minimum 8 characters
+  return password.length >= 8;
 }
 
 /**

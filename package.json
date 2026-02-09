@@ -1,6 +1,6 @@
 {
   "name": "backport-conflict-test-suite",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Test suite for evaluating backport agent conflict resolution capabilities",
   "main": "src/index.js",
   "scripts": {

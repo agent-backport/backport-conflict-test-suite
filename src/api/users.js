@@ -22,7 +22,7 @@ function createUser(userData) {
   }
 
   if (!validatePassword(password)) {
-    throw new Error('Password must be at least 12 characters with uppercase, lowercase, and number');
+    throw new Error('Password must be at least 8 characters');
   }
 
   const user = {

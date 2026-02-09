@@ -7,7 +7,7 @@ const postApi = require('./api/posts');
 const auth = require('./api/auth');
 const { getDatabaseConfig } = require('./config/database');
 
-console.log('Backport Conflict Test Suite - v2.0');
+console.log('Backport Conflict Test Suite - v1.0');
 console.log('Database config:', getDatabaseConfig());
 
 /**
