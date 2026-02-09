@@ -22,7 +22,7 @@ function createUser(userData) {
   }
 
   if (!validatePassword(password)) {
-    throw new Error('Password must be at least 8 characters');
+    throw new Error('Password must be at least 12 characters with uppercase, lowercase, and number');
   }
 
   const user = {
@@ -72,7 +72,7 @@ function deleteUser(id) {
 }
 
 /**
- * List all users with optional filtering and search
+ * List all users with optional filtering
  * @param {Object} filters - Filter criteria
  * @returns {Array} Array of user objects
  */
@@ -83,13 +83,14 @@ function listUsers(filters = {}) {
     userList = userList.filter(u => u.status === filters.status);
   }
 
-  // v1.0: Add search functionality
-  if (filters.search) {
-    const searchLower = filters.search.toLowerCase();
-    userList = userList.filter(u =>
-      u.email.toLowerCase().includes(searchLower) ||
-      (u.name && u.name.toLowerCase().includes(searchLower))
-    );
+  // v2.0: Add preferences to user listing if requested
+  if (filters.includePreferences) {
+    const { getPreferences } = require('./preferences');
+    userList = userList.map(u => ({
+      ...formatUserResponse(u),
+      preferences: getPreferences(u.id)
+    }));
+    return userList;
   }
 
   return userList.map(formatUserResponse);
