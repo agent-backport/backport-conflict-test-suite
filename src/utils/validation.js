@@ -13,13 +13,17 @@ function validateEmail(email) {
 }
 
 /**
- * Validate password strength (v1.0 requirements)
+ * Validate password strength (v2.0 requirements)
  * @param {string} password - Password to validate
  * @returns {boolean} True if password meets requirements
  */
 function validatePassword(password) {
-  // v1.0: Minimum 8 characters
-  return password.length >= 8;
+  // v2.0: Minimum 12 characters, must contain uppercase, lowercase, and number
+  if (password.length < 12) return false;
+  if (!/[A-Z]/.test(password)) return false;
+  if (!/[a-z]/.test(password)) return false;
+  if (!/[0-9]/.test(password)) return false;
+  return true;
 }
 
 /**
@@ -47,13 +51,28 @@ function validateId(id) {
 }
 
 /**
- * Validate phone number format (v1.0)
- * @param {string} phone - Phone number
- * @returns {boolean} True if valid format
+ * Validate preference value (v2.0)
+ * @param {string} key - Preference key
+ * @param {any} value - Preference value
+ * @returns {boolean} True if valid
  */
-function validatePhoneNumber(phone) {
-  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-  return phoneRegex.test(phone);
+function validatePreferenceValue(key, value) {
+  const validThemes = ['light', 'dark', 'auto'];
+  const validLanguages = ['en', 'es', 'fr', 'de', 'ja'];
+
+  if (key === 'theme') {
+    return validThemes.includes(value);
+  }
+
+  if (key === 'language') {
+    return validLanguages.includes(value);
+  }
+
+  if (key === 'notifications' || key === 'privacy') {
+    return typeof value === 'object' && value !== null;
+  }
+
+  return true;
 }
 
 module.exports = {
@@ -61,5 +80,5 @@ module.exports = {
   validatePassword,
   sanitizeInput,
   validateId,
-  validatePhoneNumber
+  validatePreferenceValue
 };
